@@ -43,7 +43,7 @@ export const Home = () => {
 					<span>{store.message}</span>
 				) : (
 					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
+						Loading message from  backend (make sure your python 🐍 backend is running)...
 					</span>
 				)}
 			</div>
