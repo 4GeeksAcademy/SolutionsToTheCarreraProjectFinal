@@ -20,27 +20,31 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const formDataToSend = {
             email: formData.email,
             password: formData.password,
             name: formData.name,
-            image_Url: formData.image ? formData.image.name : null, 
+            image_Url: formData.image ? formData.image.name : null,
         };
-    
+
         try {
-            const response = await fetch("https://opulent-adventure-v6gxwg4vprrxf6gx-3001.app.github.dev/api/users", {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+
+            const response = await fetch(backendUrl + "/api/users", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(formDataToSend),
             });
-    
+
             if (!response.ok) {
                 throw new Error("Failed to register user");
             }
-    
+
             const data = await response.json();
             setMessage("User registered successfully!");
             console.log("API Response:", data);
