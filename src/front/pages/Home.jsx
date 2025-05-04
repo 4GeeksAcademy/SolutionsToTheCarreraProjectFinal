@@ -1,15 +1,22 @@
 import React from "react";
+import ScrollToTop from "../components/ScrollToTop";
+import { Navbar } from "../components/Navbar";
+import { Footer } from "../components/Footer";
+import Banner from "../components/Banner";
+import ServicesHome from "../components/ServicesHome";
+import RatingsList from "../components/RatingsList";
 
-export const Home = () => (
-  <div className="container">
-    <div className="mt-2">
-      <h3 className="text-white">nnnn</h3>
-	  <p className="text-white"/>
-		This is the home page of the service. It is a simple page that shows
-		some information about the service.
-    </div>
-  </div>
-);
 
+const Home = () => {
+  return (
+    <ScrollToTop>
+      <Navbar />
+      <Banner />
+      <ServicesHome />
+      <RatingsList />
+      <Footer />
+    </ScrollToTop>
+  );
+};
 
 export default Home;

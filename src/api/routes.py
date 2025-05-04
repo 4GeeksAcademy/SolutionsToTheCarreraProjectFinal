@@ -1,10 +1,7 @@
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
-from api.utils import generate_sitemap, APIException
+from flask import Flask, request, jsonify, Blueprint
+from api.models import db, User, Services, Category, Rating_cliente
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 api = Blueprint('api', __name__)
 
@@ -12,44 +9,191 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+# ------------------- User Routes -------------------
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
 
-    return jsonify(response_body), 200
+@api.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([{
+        "id": user.id,
+        "email": user.email,
+        "name": user.name,
+        "image_Url": user.image_Url,
+        "is_active": user.is_active
+    } for user in users]), 200
 
-@api.route('/signup', methods=['POST'])
-def signup():
-    body_request=request.get_json()
-    exist = User.query.filter_by(email=body_request["email"]).first()
-    if exist:
-        return jsonify({"msg": "Ya existe un registro con este email"}), 400
-    new_user = User (id=body_request["id"],
-                     email=body_request["email"],
-                     password=body_request["password"]) 
+
+@api.route('/users/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    return jsonify({
+        "id": user.id,
+        "email": user.email,
+        "name": user.name,
+        "image_Url": user.image_Url,
+        "is_active": user.is_active
+    }), 200
+
+
+@api.route('/users', methods=['POST'])
+def create_user():
+    body = request.get_json()
+    new_user = User(
+        email=body["email"],
+        password=body["password"],
+        name=body["name"],
+        image_Url=body.get("image_Url"),
+        is_active=True
+    )
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({"msg": "Usuario Creado Existosamente"}), 200 
-
-@api.route('/login', methods=['POST'])
-def login():
-       body_request = request.get_json()
-       exist = User.query.filter_by(
-              email=body_request["email"], password=body_request["password"]).first()
-       if not exist:
-              return jsonify ({"msg": "Email o Password son Incorrectos"}), 400
-       token = create_access_token(identity=str(exist.id))
-       return jsonify({"token": token}), 200
+    return jsonify({"msg": "User created successfully"}), 201
 
 
-@api.route('/profile', methods=['GET'])
-@jwt_required()
-def profile():
-       user_token_id = get_jwt_identity()
-       exist_user = User.query.filter_by(id=user_token_id).first()
-       if not exist_user:
-              return jsonify({"Usuario No Encontrado"}), 400
-       return jsonify({"msg": "Usuario Autenticado", "user_email": exist_user.email}), 200
+@api.route('/users/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    body = request.get_json()
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    user.email = body.get("email", user.email)
+    user.name = body.get("name", user.name)
+    user.image_Url = body.get("image_Url", user.image_Url)
+    db.session.commit()
+    return jsonify({"msg": "User updated successfully"}), 200
+
+
+@api.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"msg": "User deleted successfully"}), 200
+
+# ------------------- Services Routes -------------------
+
+
+@api.route('/services', methods=['GET'])
+def get_services():
+    services = Services.query.all()
+    return jsonify([{
+        "id": service.id,
+        "name": service.name,
+        "description": service.description,
+        "time": service.time,
+        "price": service.price,
+        "image_Url": service.image_Url,
+        "user_id": service.user_id,
+        "category_id": service.category_id
+    } for service in services]), 200
+
+
+@api.route('/services/<int:service_id>', methods=['GET'])
+def get_service(service_id):
+    service = Services.query.get(service_id)
+    if not service:
+        return jsonify({"msg": "Service not found"}), 404
+    return jsonify({
+        "id": service.id,
+        "name": service.name,
+        "description": service.description,
+        "time": service.time,
+        "price": service.price,
+        "image_Url": service.image_Url,
+        "user_id": service.user_id,
+        "category_id": service.category_id
+    }), 200
+
+
+@api.route('/services', methods=['POST'])
+def create_service():
+    body = request.get_json()
+    new_service = Services(
+        name=body["name"],
+        description=body["description"],
+        time=body["time"],
+        price=body["price"],
+        image_Url=body.get("image_Url"),
+        user_id=body["user_id"],
+        category_id=body["category_id"]
+    )
+    db.session.add(new_service)
+    db.session.commit()
+    return jsonify({"msg": "Service created successfully"}), 201
+
+
+@api.route('/services/<int:service_id>', methods=['PUT'])
+def update_service(service_id):
+    body = request.get_json()
+    service = Services.query.get(service_id)
+    if not service:
+        return jsonify({"msg": "Service not found"}), 404
+    service.name = body.get("name", service.name)
+    service.description = body.get("description", service.description)
+    service.time = body.get("time", service.time)
+    service.price = body.get("price", service.price)
+    service.image_Url = body.get("image_Url", service.image_Url)
+    db.session.commit()
+    return jsonify({"msg": "Service updated successfully"}), 200
+
+
+@api.route('/services/<int:service_id>', methods=['DELETE'])
+def delete_service(service_id):
+    service = Services.query.get(service_id)
+    if not service:
+        return jsonify({"msg": "Service not found"}), 404
+    db.session.delete(service)
+    db.session.commit()
+    return jsonify({"msg": "Service deleted successfully"}), 200
+
+# ------------------- Category Routes -------------------
+
+
+@api.route('/categories', methods=['GET'])
+def get_categories():
+    categories = Category.query.all()
+    return jsonify([{
+        "id": category.id,
+        "category": category.category
+    } for category in categories]), 200
+
+
+@api.route('/categories', methods=['POST'])
+def create_category():
+    body = request.get_json()
+    new_category = Category(category=body["category"])
+    db.session.add(new_category)
+    db.session.commit()
+    return jsonify({"msg": "Category created successfully"}), 201
+
+# ------------------- Rating Routes -------------------
+
+
+@api.route('/ratings', methods=['GET'])
+def get_ratings():
+    ratings = Rating_cliente.query.all()
+    return jsonify([{
+        "id": rating.id,
+        "rating": rating.rating,
+        "opinions": rating.opinions,
+        "user_id": rating.user_id
+    } for rating in ratings]), 200
+
+
+@api.route('/ratings', methods=['POST'])
+def create_rating():
+    body = request.get_json()
+    new_rating = Rating_cliente(
+        rating=body["rating"],
+        user_id=body["user_id"],
+        opinions=body["opinions"]
+
+    )
+    db.session.add(new_rating)
+    db.session.commit()
+    return jsonify({"msg": "Rating created successfully"}), 201

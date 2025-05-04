@@ -6,14 +6,28 @@ export const Navbar = () => {
 	return (
 		<nav className="navbar navbar-light bg-light">
 			<div className="container-fluid">
-				<Link to="/">
-					<span className="navbar-brand mb-0 h1">Solutions'  To The Carrera</span>
+				<Link to="/" className="d-flex align-items-center mx-auto text-center">
+					<img
+						src="https://st4.depositphotos.com/38197074/41920/v/450/depositphotos_419209170-stock-illustration-initial-letter-vector-logo-icon.jpg"
+						alt="Logo"
+						className="me-2"
+						style={{ width: "40px", height: "40px", borderRadius: "50%" }}
+					/>
+					<span className="navbar-brand mb-0 h1" style={{ fontSize: "1.8rem", fontWeight: "bold" }}>
+						Solutions' To The Carrera
+					</span>
 				</Link>
-				<div className="d-grid gap-2 d-md-block">
-					<Link to="/demo">
-						<button className="btn btn-primary">Sing in</button>
-						<button className="btn btn-primary">Register</button>
-					</Link>
+				<div className="d-flex justify-content-end">
+					<div className="me-2">
+						<Link to="/singin">
+							<button className="btn btn-primary">Sign in</button>
+						</Link>
+					</div>
+					<div>
+						<Link to="/register">
+							<button className="btn btn-primary">Register</button>
+						</Link>
+					</div>
 				</div>
 			</div>
 		</nav>

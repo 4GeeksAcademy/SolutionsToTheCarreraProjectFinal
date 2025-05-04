@@ -1,30 +1,65 @@
-import React from 'react';
-
+import React, { useEffect, useState } from "react";
+import Slider from "react-slick";
+import CardServices from "../components/CardServices";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const ServicesHome = () => {
+    const [services, setServices] = useState([]);
+
+    // Fetch data from the API
+    useEffect(() => {
+        const fetchServices = async () => {
+            try {
+                const response = await fetch("https://opulent-adventure-v6gxwg4vprrxf6gx-3001.app.github.dev/api/services"); // Cambia la URL según tu API
+                if (!response.ok) {
+                    throw new Error("Failed to fetch services");
+                }
+                const data = await response.json();
+                setServices(data);
+            } catch (error) {
+                console.error("Error fetching services:", error);
+            }
+        };
+
+        fetchServices();
+    }, []);
+
+    // Configuración de react-slick
+    const settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3, // Muestra 3 tarjetas al mismo tiempo
+        slidesToScroll: 1, // Desplaza una tarjeta por clic
+        responsive: [
+            {
+                breakpoint: 1024, // Para pantallas medianas
+                settings: {
+                    slidesToShow: 2,
+                },
+            },
+            {
+                breakpoint: 600, // Para pantallas pequeñas
+                settings: {
+                    slidesToShow: 1,
+                },
+            },
+        ],
+    };
+
     return (
-        <div>
-            <div className="container">
-                <h1 className="text-center mt-5">Welcome to Our Services</h1>
-                <p className="lead text-center">We offer a variety of services to meet your needs.</p>
-
-                <div className="row">
-                    <div className="col-md-4">
-                        <h2>Service 1</h2>
-                        <p>Description of Service 1.</p>
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Our Services</h2>
+            <Slider {...settings}>
+                {services.map((service) => (
+                    <div key={service.id} style={{ padding: "10px" }}>
+                        <div>
+                            <CardServices service={service} />
+                        </div>
                     </div>
-
-                    <div className="col-md-4">
-                        <h2>Service 2</h2>
-                        <p>Description of Service 2.</p>
-                    </div>
-
-                    <div className="col-md-4">
-                        <h2>Service 3</h2>
-                        <p>Description of Service 3.</p>
-                    </div>
-                </div>
-            </div>
+                ))}
+            </Slider>
         </div>
     );
 };

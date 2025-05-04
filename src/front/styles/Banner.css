@@ -1,0 +1,19 @@
+.banner {
+    background-color: #f8f9fa;
+    padding: 2rem;
+    text-align: center;
+}
+
+.banner img {
+    max-height: 200px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+}
+
+.banner input {
+    width: 50%;
+}
+
+.banner button {
+    margin-left: 0.5rem;
+}

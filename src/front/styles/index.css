@@ -1,0 +1,18 @@
+body {
+  background-color: #e4e4e4d2; /* Light gray background */
+}
+h1 {
+  color: #333; /* Dark gray text */
+  font-size: 2em; /* Large font size */
+  text-align: center; /* Centered text */
+}
+h2 {
+  color: #555; /* Medium gray text */
+  font-size: 1.5em; /* Medium font size */
+  text-align: center; /* Centered text */
+}
+h3 {
+  color: #777; /* Light gray text */
+  font-size: 1.2em; /* Small font size */
+  text-align: center; /* Centered text */
+}
