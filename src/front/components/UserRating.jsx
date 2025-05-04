@@ -1,14 +1,14 @@
 import React from "react";
-import defaultUserImage from "../assets/img/image.png"; // Imagen predeterminada si no hay imagen del usuario
-import { FaStar, FaRegStar } from "react-icons/fa"; // Iconos para las estrellas
+import defaultUserImage from "../assets/img/image.png";
+import { FaStar, FaRegStar } from "react-icons/fa";
 
 const UserRating = ({ rating }) => {
     const { userImage, userName, stars, opinion } = rating;
 
-    // Generar estrellas llenas y vacías según el rating
+
     const renderStars = () => {
-        const fullStars = Math.floor(stars); // Número de estrellas llenas
-        const emptyStars = 5 - fullStars; // Número de estrellas vacías
+        const fullStars = Math.floor(stars);
+        const emptyStars = 5 - fullStars;
         return (
             <>
                 {[...Array(fullStars)].map((_, index) => (

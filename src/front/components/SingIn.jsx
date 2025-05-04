@@ -5,13 +5,17 @@ const SingIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
-    const navigate = useNavigate(); // Hook para redirigir al usuario
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            const response = await fetch("https://opulent-adventure-v6gxwg4vprrxf6gx-3001.app.github.dev/api/login", {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL
+
+            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+
+            const response = await fetch(backendUrl + "/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

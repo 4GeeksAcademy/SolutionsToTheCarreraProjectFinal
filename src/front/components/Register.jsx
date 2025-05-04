@@ -8,7 +8,7 @@ const Register = () => {
         image: null,
     });
 
-    const [message, setMessage] = useState(""); // Para mostrar mensajes de éxito o error
+    const [message, setMessage] = useState("");
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -25,7 +25,7 @@ const Register = () => {
             email: formData.email,
             password: formData.password,
             name: formData.name,
-            image_Url: formData.image ? formData.image.name : null, // Solo envía el nombre del archivo
+            image_Url: formData.image ? formData.image.name : null, 
         };
     
         try {

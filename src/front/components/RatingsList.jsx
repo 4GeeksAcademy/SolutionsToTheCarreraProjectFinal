@@ -9,7 +9,11 @@ const RatingsList = () => {
     useEffect(() => {
         const fetchRatings = async () => {
             try {
-                const response = await fetch("https://opulent-adventure-v6gxwg4vprrxf6gx-3001.app.github.dev/api/ratings"); // Cambia la URL según tu API
+                const backendUrl = import.meta.env.VITE_BACKEND_URL
+                
+                if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+
+                const response = await fetch(backendUrl +"/api/ratings"); 
                 if (!response.ok) {
                     throw new Error("Failed to fetch ratings");
                 }

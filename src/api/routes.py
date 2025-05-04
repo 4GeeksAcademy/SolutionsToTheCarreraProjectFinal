@@ -9,6 +9,30 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
+@api.route('/login', methods=['POST'])
+def login():
+    body = request.get_json()
+
+    if not body or not body.get("email") or not body.get("password"):
+        return jsonify({"msg": "Email and password are required"}), 400
+
+    user = User.query.filter_by(email=body["email"]).first()
+
+    if not user or user.password != body["password"]:
+        return jsonify({"msg": "Invalid email or password"}), 401
+
+    access_token = create_access_token(identity=user.id)
+    return jsonify({
+        "msg": "Login successful",
+        "token": access_token,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "image_Url": user.image_Url
+        }
+    }), 200
+
 # ------------------- User Routes -------------------
 
 

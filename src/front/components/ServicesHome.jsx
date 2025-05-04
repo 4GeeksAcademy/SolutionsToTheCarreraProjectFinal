@@ -7,11 +7,14 @@ import "slick-carousel/slick/slick-theme.css";
 const ServicesHome = () => {
     const [services, setServices] = useState([]);
 
-    // Fetch data from the API
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await fetch("https://opulent-adventure-v6gxwg4vprrxf6gx-3001.app.github.dev/api/services"); // Cambia la URL según tu API
+                const backendUrl = import.meta.env.VITE_BACKEND_URL
+                
+                if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+
+                const response = await fetch(backendUrl +"/api/services"); 
                 if (!response.ok) {
                     throw new Error("Failed to fetch services");
                 }
@@ -25,22 +28,21 @@ const ServicesHome = () => {
         fetchServices();
     }, []);
 
-    // Configuración de react-slick
     const settings = {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 3, // Muestra 3 tarjetas al mismo tiempo
-        slidesToScroll: 1, // Desplaza una tarjeta por clic
+        slidesToShow: 3, 
+        slidesToScroll: 1, 
         responsive: [
             {
-                breakpoint: 1024, // Para pantallas medianas
+                breakpoint: 1024,
                 settings: {
                     slidesToShow: 2,
                 },
             },
             {
-                breakpoint: 600, // Para pantallas pequeñas
+                breakpoint: 600, 
                 settings: {
                     slidesToShow: 1,
                 },
