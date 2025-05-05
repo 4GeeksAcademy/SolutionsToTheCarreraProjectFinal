@@ -11,18 +11,31 @@ CORS(api)
 
 @api.route('/login', methods=['POST'])
 def login():
+    # Traza para verificar que se accede al endpoint
+    print("Login endpoint hit")
+
     body = request.get_json()
+    # Traza para verificar el cuerpo de la solicitud
+    print("Request body received:", body)
 
     if not body or not body.get("email") or not body.get("password"):
+        # Traza para errores de validación
+        print("Missing email or password in request body")
         return jsonify({"msg": "Email and password are required"}), 400
 
     user = User.query.filter_by(email=body["email"]).first()
+    # Traza para verificar si el usuario existe
+    print("User fetched from database:", user)
 
     if not user or user.password != body["password"]:
+        print("Invalid email or password")  # Traza para credenciales inválidas
         return jsonify({"msg": "Invalid email or password"}), 401
-
+    print("User fetched from database:", user.id)
     access_token = create_access_token(identity=user.id)
-    return jsonify({
+    # Traza para verificar la creación del token
+    print("Access token created:", access_token)
+
+    response = jsonify({
         "msg": "Login successful",
         "token": access_token,
         "user": {
@@ -31,10 +44,15 @@ def login():
             "name": user.name,
             "image_Url": user.image_Url
         }
-    }), 200
+    })
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    # Traza para verificar la respuesta enviada
+    print("Response sent:", response.json)
+
+    return response, 200, {'Access-Control-Allow-Origin': '*'}
+
 
 # ------------------- User Routes -------------------
-
 
 @api.route('/users', methods=['GET'])
 def get_users():

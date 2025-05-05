@@ -11,16 +11,21 @@ const SingIn = () => {
         e.preventDefault();
 
         try {
+            const formData = {
+                email: email,
+                password: password
+            };
+
             const backendUrl = import.meta.env.VITE_BACKEND_URL
 
             if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
 
-            const response = await fetch(backendUrl + "/api/login", {
+            const response = await fetch(`${backendUrl}/api/login`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
@@ -30,7 +35,8 @@ const SingIn = () => {
             const data = await response.json();
             console.log("Login successful:", data);
 
-            // Redirigir al usuario a la página de usuario
+            localStorage.setItem("token", data.token);
+
             navigate("/user");
         } catch (error) {
             console.error("Error during login:", error);
@@ -49,7 +55,6 @@ const SingIn = () => {
                         type="email"
                         className="form-control"
                         id="email"
-                        value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
@@ -60,7 +65,6 @@ const SingIn = () => {
                         type="password"
                         className="form-control"
                         id="password"
-                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />

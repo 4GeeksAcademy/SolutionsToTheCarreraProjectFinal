@@ -9,7 +9,7 @@ import { Layout } from "./pages/Layout";
 import Home from "./pages/Home";
 import SingInPage from "./pages/SingInPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
-
+import UserPage from "./pages/UserPage.jsx";
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -30,6 +30,8 @@ export const router = createBrowserRouter(
       {/* Nueva ruta para la página de inicio de sesión */}
       <Route path="/singin" element={<SingInPage />} />
 
+      {/* Nueva ruta para la página de inicio de sesión */}
+      <Route path="/user" element={<UserPage />} />
 
     </>
 
