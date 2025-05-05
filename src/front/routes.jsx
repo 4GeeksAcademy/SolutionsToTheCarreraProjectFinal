@@ -10,6 +10,10 @@ import Home from "./pages/Home";
 import SingInPage from "./pages/SingInPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UserPage from "./pages/UserPage.jsx";
+import ServicesPage from "./pages/ServicesPage.jsx";
+
+import { redirect } from "react-router-dom";
+
 export const router = createBrowserRouter(
   createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -32,6 +36,18 @@ export const router = createBrowserRouter(
 
       {/* Nueva ruta para la página de inicio de sesión */}
       <Route path="/user" element={<UserPage />} />
+
+      <Route path="/services/:serviceId?" element={<ServicesPage />} />
+
+      {/* Nueva ruta para la página de inicio de sesión */}
+      <Route path="/logout" action={() => {
+        // Clear user data (e.g., token) from localStorage
+        // TODO: Implement logout logic here
+        // Redirect to the home page
+        return redirect("/");
+      }
+
+      } />
 
     </>
 

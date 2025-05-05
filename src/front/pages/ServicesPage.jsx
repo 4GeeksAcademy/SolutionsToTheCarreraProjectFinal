@@ -1,6 +1,6 @@
 import React from "react";
 import { Navbar } from "../components/Navbar";
-import User from "../components/User";
+import Services from "../components/Services";
 import { Footer } from "../components/Footer"
 
 const UserPage = () => {
@@ -8,7 +8,7 @@ const UserPage = () => {
         <div>
             <Navbar />
             <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                <User />
+                <Services />
             </div>
             <Footer />
         </div>

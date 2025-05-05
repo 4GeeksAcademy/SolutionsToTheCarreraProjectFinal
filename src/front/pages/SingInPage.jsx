@@ -8,7 +8,6 @@ const SingInPage = () => {
         <div>
             <Navbar />
             <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                <h2 className="text-center">Sign In</h2>
                 <SingIn />
             </div>
             <Footer />

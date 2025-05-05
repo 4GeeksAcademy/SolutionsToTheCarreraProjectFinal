@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Navbar = () => {
+	const { store, dispatch } = useGlobalReducer();
 
 	return (
 		<nav className="navbar navbar-light bg-light">
@@ -18,16 +19,36 @@ export const Navbar = () => {
 					</span>
 				</Link>
 				<div className="d-flex justify-content-end">
-					<div className="me-2">
-						<Link to="/singin">
-							<button className="btn btn-primary">Sign in</button>
-						</Link>
-					</div>
-					<div>
-						<Link to="/register">
-							<button className="btn btn-primary">Register</button>
-						</Link>
-					</div>
+					{ // If the user is logged in, show the User button
+						store.token ? (
+							<>
+								<div className="me-2">
+									<Link to="/user">
+										<button className="btn btn-primary">User</button>
+									</Link>
+								</div>
+								<div className="me-2">
+									<Link to="/logout">
+										<button className="btn btn-primary">Logout</button>
+									</Link>
+								</div>
+							</>
+						) : ( // If the user is not logged in, show the Sign In and Register buttons
+							<>
+								<div className="me-2">
+									<Link to="/singin">
+										<button className="btn btn-primary">Sign in</button>
+									</Link>
+								</div>
+								<div>
+									<Link to="/register">
+										<button className="btn btn-primary">Register</button>
+									</Link>
+								</div>
+							</>
+						)
+					}
+
 				</div>
 			</div>
 		</nav>

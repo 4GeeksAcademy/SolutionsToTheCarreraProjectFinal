@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import useGlobalReducer from "../hooks/useGlobalReducer";
 const SingIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
+
+    const { store, dispatch } = useGlobalReducer();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,8 +37,10 @@ const SingIn = () => {
             const data = await response.json();
             console.log("Login successful:", data);
 
-            localStorage.setItem("token", data.token);
+            // localStorage.setItem("token", data.token);
+            //dispatch(store, { action: "login", data: { token: data.token, user: data.user } });
 
+            dispatch({ type: "login", payload: { token: data.token, user: data.user } })
             navigate("/user");
         } catch (error) {
             console.error("Error during login:", error);
@@ -46,7 +50,7 @@ const SingIn = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center">Sign In</h2>
+            <h2 className="text-center">Sign In {JSON.stringify(store.user)}</h2>
             {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">

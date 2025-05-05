@@ -11,45 +11,26 @@ CORS(api)
 
 @api.route('/login', methods=['POST'])
 def login():
-    # Traza para verificar que se accede al endpoint
-    print("Login endpoint hit")
-
     body = request.get_json()
-    # Traza para verificar el cuerpo de la solicitud
-    print("Request body received:", body)
 
     if not body or not body.get("email") or not body.get("password"):
-        # Traza para errores de validación
-        print("Missing email or password in request body")
         return jsonify({"msg": "Email and password are required"}), 400
 
     user = User.query.filter_by(email=body["email"]).first()
-    # Traza para verificar si el usuario existe
-    print("User fetched from database:", user)
 
     if not user or user.password != body["password"]:
         print("Invalid email or password")  # Traza para credenciales inválidas
         return jsonify({"msg": "Invalid email or password"}), 401
-    print("User fetched from database:", user.id)
     access_token = create_access_token(identity=user.id)
-    # Traza para verificar la creación del token
-    print("Access token created:", access_token)
-
     response = jsonify({
-        "msg": "Login successful",
         "token": access_token,
         "user": {
             "id": user.id,
             "email": user.email,
-            "name": user.name,
-            "image_Url": user.image_Url
+            "name": user.name
         }
     })
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    # Traza para verificar la respuesta enviada
-    print("Response sent:", response.json)
-
-    return response, 200, {'Access-Control-Allow-Origin': '*'}
+    return response, 200
 
 
 # ------------------- User Routes -------------------
@@ -117,6 +98,26 @@ def delete_user(user_id):
     db.session.commit()
     return jsonify({"msg": "User deleted successfully"}), 200
 
+
+@api.route('/users/<int:user_id>/services', methods=['GET'])
+def get_user_services(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    services = Services.query.filter_by(user_id=user_id).all()
+    if not services:
+        return jsonify({"msg": "No services found for this user"}), 404
+
+    return jsonify([{
+        "id": service.id,
+        "name": service.name,
+        "description": service.description,
+        "time": service.time,
+        "price": service.price,
+        "image_Url": service.image_Url,
+        "category_id": service.category_id
+    } for service in services]), 200
 # ------------------- Services Routes -------------------
 
 
