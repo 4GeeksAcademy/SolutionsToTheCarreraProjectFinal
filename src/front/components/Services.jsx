@@ -177,7 +177,7 @@ const Services = () => {
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Register Service</button>
+                <button type="submit" className={`btn btn-${serviceId ? "primary" : "success"}`}>{serviceId ? "Edit" : "Create"}</button>
             </form>
         </div>
     );

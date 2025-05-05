@@ -8,6 +8,62 @@ const User = () => {
     const [editing, setEditing] = useState(false);
 
 
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const [message, setMessage] = useState("");
+
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        setFormData({
+            ...formData,
+            [name]: files ? files[0] : value,
+        });
+    };
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formDataToSend = {
+            email: formData.email,
+            user_id: store.user.id,
+        };
+
+        if (formData.password) {
+            formDataToSend.password = formData.password;
+        }
+
+        try {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
+
+            const response = await fetch(backendUrl + `/api/users/${store.user.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formDataToSend),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update user data");
+            }
+
+            const data = await response.json();
+            // setMessage("Service registered successfully!");
+            console.log("API Response:", data);
+            setEditing(false);
+            fetchUserData(); // Refresh user data after update
+        } catch (error) {
+            console.error("Error updating user:", error);
+            // setMessage("Error registering service. Please try again.");
+        }
+    };
+
     const { store, dispatch } = useGlobalReducer();
 
     const fetchUserData = async () => {
@@ -22,7 +78,7 @@ const User = () => {
             }
             const userData = await response.json();
             setUser(userData);
-
+            setFormData(userData)
             // Fetch related data (e.g., services or ratings)
             const userServices = await fetch(`${backendUrl}/api/users/${store.user.id}/services`);
             if (!userServices.ok) {
@@ -94,18 +150,49 @@ const User = () => {
                 </div>
                 <div className="col-md-8">
                     <h2>Welcome {user.name}!</h2>
-                    <div className="form-group">
-                        <label>Email:</label>
-                        {editing ? (
-                             <input type="email" value="{user.email}" />
-                        ) : (
-                        <span>{user.email}</span>
-                        )}
-                    </div>
-                    {editing && <input type="password" />}
-                    {editing && <button className="btn btn-info" >Save</button>}
-                    {!editing && <button className="btn btn-primary" onClick={() => setEditing(true)}>Edit</button>}
-                    {editing && <button className="btn btn-danger" onClick={() => setEditing(false)}>Cancel</button>}
+                    {!editing && (
+                        <>
+                            <label>Email:</label>
+                            <span>{user.email}</span>
+                            <button className="btn btn-primary" onClick={() => setEditing(true)}>Edit</button>
+                        </>
+                    )}
+
+                    {
+                        editing && (
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="name" className="form-label">Email</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="name"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="name" className="form-label">Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="********"
+                                        className="form-control"
+                                        id="name"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+
+                                <button type="submit" className="btn btn-info">Save</button>
+                                <button className="btn btn-danger" onClick={() => setEditing(false)}>Cancel</button>
+                            </form>
+
+                        )
+
+                    }
 
                 </div>
             </div>
