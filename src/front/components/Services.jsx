@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const Services = () => {
     const { store, dispatch } = useGlobalReducer();
     const { serviceId } = useParams();
@@ -15,6 +17,8 @@ const Services = () => {
         image: null,
         category_id: "",
     });
+
+    const navigate = useNavigate()
 
     const [message, setMessage] = useState("");
 
@@ -94,6 +98,7 @@ const Services = () => {
 
             const data = await response.json();
             setMessage("Service registered successfully!");
+            navigate("/user");
             console.log("API Response:", data);
         } catch (error) {
             console.error("Error registering service:", error);
@@ -108,6 +113,7 @@ const Services = () => {
                 "Editar servicio"
             ) : ("Crear servicio")}</h2>
             <form onSubmit={handleSubmit}>
+
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Service Name</label>
                     <input
@@ -129,6 +135,7 @@ const Services = () => {
                         value={formData.description}
                         onChange={handleChange}
                         required
+                        
                     />
                 </div>
                 <div className="mb-3">
