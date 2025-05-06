@@ -19,7 +19,7 @@ export const Navbar = () => {
 					</span>
 				</Link>
 				<div className="d-flex justify-content-end">
-					{ // If the user is logged in, show the User button
+					{ 
 						store.token ? (
 							<>
 								<div className="me-2">
@@ -33,7 +33,7 @@ export const Navbar = () => {
 									</Link>
 								</div>
 							</>
-						) : ( // If the user is not logged in, show the Sign In and Register buttons
+						) : ( 
 							<>
 								<div className="me-2">
 									<Link to="/singin">
