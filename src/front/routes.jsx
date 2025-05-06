@@ -5,13 +5,14 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import { Layout } from "./pages/Layout";
+
 import Home from "./pages/Home";
 import SingInPage from "./pages/SingInPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UserPage from "./pages/UserPage.jsx";
 import ServicesPage from "./pages/ServicesPage.jsx";
-
+import SearchResultsPage from "./pages/SearchResultsPage.jsx";
+import ServiceDetailPage from "./pages/ServiceDetailPage";
 import { redirect } from "react-router-dom";
 
 export const router = createBrowserRouter(
@@ -25,21 +26,14 @@ export const router = createBrowserRouter(
     // Root Route: All navigation will start from here.
 
     <>
-      {/* Root Route: All navigation will start from here. */}
+
       <Route path="/" element={<Home />} errorElement={<h1>Not found!</h1>} />
-
-      {/* Nueva ruta para la página de registro */}
       <Route path="/register" element={<RegisterPage />} />
-
-      {/* Nueva ruta para la página de inicio de sesión */}
       <Route path="/singin" element={<SingInPage />} />
-
-      {/* Nueva ruta para la página de inicio de sesión */}
       <Route path="/user" element={<UserPage />} />
-
       <Route path="/services/:serviceId?" element={<ServicesPage />} />
-
-      {/* Nueva ruta para la página de inicio de sesión */}
+      <Route path="/search-results" element={<SearchResultsPage />} />
+      <Route path="/servicedetail/:id" element={<ServiceDetailPage />} />
       <Route path="/logout" action={() => {
         // Clear user data (e.g., token) from localStorage
         // TODO: Implement logout logic here

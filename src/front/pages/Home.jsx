@@ -5,6 +5,7 @@ import { Footer } from "../components/Footer";
 import Banner from "../components/Banner";
 import ServicesHome from "../components/ServicesHome";
 import RatingsList from "../components/RatingsList";
+import Search from "../components/Search";
 
 
 const Home = () => {
@@ -12,6 +13,7 @@ const Home = () => {
     <ScrollToTop>
       <Navbar />
       <Banner />
+      <Search />
       <ServicesHome />
       <RatingsList />
       <Footer />

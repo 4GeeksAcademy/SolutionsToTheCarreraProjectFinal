@@ -142,58 +142,60 @@ const User = () => {
             <div className="row mb-4">
                 <div className="col-md-4 text-center">
                     <img
-                        src={user.image_Url || "https://via.placeholder.com/150"}
+                        src={user.image_Url}
                         alt={user.name}
                         className="img-fluid rounded-circle"
                         style={{ width: "200px", height: "200px" }}
                     />
                 </div>
-                <div className="col-md-8">
-                    <h2>Welcome {user.name}!</h2>
+                <div className="col-md-8 d-flex flex-column">
+                    <h2 className="text-center mb-4">Welcome {user.name}!</h2>
                     {!editing && (
-                        <>
-                            <label>Email:</label>
+                        <div className="mb-4">
+                            <label className="mb-2 d-block">Email:</label>
                             <span>{user.email}</span>
-                            <button className="btn btn-primary" onClick={() => setEditing(true)}>Edit</button>
-                        </>
+                        </div>
                     )}
 
-                    {
-                        editing && (
-                            <form onSubmit={handleSubmit}>
-                                <div className="mb-3">
-                                    <label htmlFor="name" className="form-label">Email</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="name"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="name" className="form-label">Password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="********"
-                                        className="form-control"
-                                        id="name"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+                    {editing && (
+                        <form onSubmit={handleSubmit} className="w-100">
+                            <div className="mb-3">
+                                <label htmlFor="email" className="form-label">Email</label>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    id="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="password" className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    placeholder="********"
+                                    className="form-control"
+                                    id="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </form>
+                    )}
 
-                                <button type="submit" className="btn btn-info">Save</button>
-                                <button className="btn btn-danger" onClick={() => setEditing(false)}>Cancel</button>
-                            </form>
-
-                        )
-
-                    }
-
+                    <div className="mt-auto d-flex justify-content-start">
+                        {editing ? (
+                            <>
+                                <button type="submit" className="btn btn-info btn-lg me-2">Save</button>
+                                <button className="btn btn-danger btn-lg" onClick={() => setEditing(false)}>Cancel</button>
+                            </>
+                        ) : (
+                            <button className="btn btn-primary btn-lg" onClick={() => setEditing(true)}>Edit</button>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="mt-4">
@@ -206,7 +208,8 @@ const User = () => {
                             <tr>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Created At</th>
+                                <th>Time</th>
+                                <th>Price</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -215,7 +218,8 @@ const User = () => {
                                 <tr key={service.id}>
                                     <td>{service.name}</td>
                                     <td>{service.description}</td>
-                                    <td>{new Date(service.created_at).toLocaleDateString()}</td>
+                                    <td>{service.time}</td>
+                                    <td>{service.price}</td>
                                     <td>
                                         <Link to={`/services/${service.id}`} className="btn btn-primary btn-sm me-2">
                                             View

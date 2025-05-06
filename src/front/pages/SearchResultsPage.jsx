@@ -1,15 +1,17 @@
 import React from "react";
 import { Navbar } from "../components/Navbar";
-import User from "../components/User";
+import SearchResults from "../components/SearchResults";
 import { Footer } from "../components/Footer"
+import Search from "../components/Search";
 
-const UserPage = () => {
+const RegisterPage = () => {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Navbar />
             <div className="flex-grow-1">
+                <Search />
                 <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                    <User />
+                    <SearchResults />
                 </div>
             </div>
             <Footer />
@@ -17,4 +19,4 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default RegisterPage;

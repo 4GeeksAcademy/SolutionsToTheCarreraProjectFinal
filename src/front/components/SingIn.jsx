@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import operariosImage from "../assets/img/image.png";
+
 const SingIn = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -18,9 +20,9 @@ const SingIn = () => {
                 password: password
             };
 
-            const backendUrl = import.meta.env.VITE_BACKEND_URL
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
+            if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
 
             const response = await fetch(`${backendUrl}/api/login`, {
                 method: "POST",
@@ -37,10 +39,7 @@ const SingIn = () => {
             const data = await response.json();
             console.log("Login successful:", data);
 
-            // localStorage.setItem("token", data.token);
-            //dispatch(store, { action: "login", data: { token: data.token, user: data.user } });
-
-            dispatch({ type: "login", payload: { token: data.token, user: data.user } })
+            dispatch({ type: "login", payload: { token: data.token, user: data.user } });
             navigate("/user");
         } catch (error) {
             console.error("Error during login:", error);
@@ -50,31 +49,46 @@ const SingIn = () => {
 
     return (
         <div className="container mt-5">
-            <h2 className="text-center">Sign In {JSON.stringify(store.user)}</h2>
-            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
-                    <input
-                        type="email"
-                        className="form-control"
-                        id="email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+            <div className="row align-items-center">
+                {/* Imagen grande a la izquierda */}
+                <div className="col-md-6 text-center">
+                    <img
+                        src={operariosImage}
+                        alt="Sign In Illustration"
+                        className="img-fluid rounded"
+                        style={{ maxWidth: "100%" }}
                     />
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input
-                        type="password"
-                        className="form-control"
-                        id="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+
+                {/* Formulario a la derecha */}
+                <div className="col-md-6">
+                    <h2 className="text-center mb-4">Sign In</h2>
+                    {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                    <form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm">
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label">Email address</label>
+                            <input
+                                type="email"
+                                className="form-control form-control-sm"
+                                id="email"
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label">Password</label>
+                            <input
+                                type="password"
+                                className="form-control form-control-sm"
+                                id="password"
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-sm w-100">Sign In</button>
+                    </form>
                 </div>
-                <button type="submit" className="btn btn-primary">Sign In</button>
-            </form>
+            </div>
         </div>
     );
 };

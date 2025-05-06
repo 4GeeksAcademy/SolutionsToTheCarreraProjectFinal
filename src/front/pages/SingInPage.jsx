@@ -5,13 +5,15 @@ import { Footer } from "../components/Footer"
 
 const SingInPage = () => {
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
             <Navbar />
-            <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                <SingIn />
+            <div className="flex-grow-1">
+                <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
+                    <SingIn />
+                </div>
             </div>
             <Footer />
-        </div>
+        </div >
     );
 };
 

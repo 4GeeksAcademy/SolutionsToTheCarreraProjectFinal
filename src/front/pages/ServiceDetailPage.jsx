@@ -1,15 +1,15 @@
 import React from "react";
 import { Navbar } from "../components/Navbar";
-import User from "../components/User";
+import ServiceDetail from "../components/ServiceDetail";
 import { Footer } from "../components/Footer"
 
-const UserPage = () => {
+const ServicesPage = () => {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Navbar />
             <div className="flex-grow-1">
                 <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                    <User />
+                    <ServiceDetail />
                 </div>
             </div>
             <Footer />
@@ -17,4 +17,4 @@ const UserPage = () => {
     );
 };
 
-export default UserPage;
+export default ServicesPage;

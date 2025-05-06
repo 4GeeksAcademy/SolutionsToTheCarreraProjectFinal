@@ -240,3 +240,50 @@ def create_rating():
     db.session.add(new_rating)
     db.session.commit()
     return jsonify({"msg": "Rating created successfully"}), 201
+
+
+@api.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '').lower()
+
+    if not query:
+        services = Services.query.all()
+    else:
+        services = Services.query.filter(
+            (Services.name.ilike(f"%{query}%")) | (
+                Services.description.ilike(f"%{query}%"))
+        ).all()
+
+    results = []
+    for service in services:
+
+        user = User.query.get(service.user_id)
+
+        ratings = Rating_cliente.query.filter_by(user_id=service.user_id).all()
+        if ratings:
+            average_rating = sum(
+                rating.rating for rating in ratings) / len(ratings)
+        else:
+            average_rating = 0
+
+        results.append({
+            "service": {
+                "id": service.id,
+                "name": service.name,
+                "description": service.description,
+                "time": service.time,
+                "price": service.price,
+                "image_Url": service.image_Url,
+                "category_id": service.category_id
+            },
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "image_Url": user.image_Url,
+                "is_active": user.is_active,
+                "average_rating": round(average_rating, 2)
+            } if user else None
+        })
+
+    return jsonify(results), 200
