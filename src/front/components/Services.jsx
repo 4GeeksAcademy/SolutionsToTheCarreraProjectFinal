@@ -22,6 +22,9 @@ const Services = () => {
 
     const [message, setMessage] = useState("");
 
+    const [categories, setCategories] = useState([]);
+
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         setFormData({
@@ -49,6 +52,15 @@ const Services = () => {
                 }
                 const serviceData = await response.json();
                 setFormData(serviceData);
+
+
+                const categoryResponse = await fetch(`${backendUrl}/api/categories`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user data");
+                }
+                const categoryData = await categoryResponse.json();
+                setCategories(categoryData);
+
             } catch (error) {
                 console.error("Error fetching user data:", error);
             } finally {
@@ -135,7 +147,7 @@ const Services = () => {
                         value={formData.description}
                         onChange={handleChange}
                         required
-                        
+
                     />
                 </div>
                 <div className="mb-3">
@@ -173,17 +185,24 @@ const Services = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="category_id" className="form-label">Category ID</label>
-                    <input
-                        type="number"
-                        className="form-control"
+                    <label htmlFor="category_id" className="form-label">Category</label>
+                    <select
+                        className="form-select"
                         id="category_id"
                         name="category_id"
                         value={formData.category_id}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">Select a category</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.category}
+                            </option>
+                        ))}
+                    </select>
                 </div>
+
                 <button type="submit" className={`btn btn-${serviceId ? "primary" : "success"}`}>{serviceId ? "Edit" : "Create"}</button>
             </form>
         </div>

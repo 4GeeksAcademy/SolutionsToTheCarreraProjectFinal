@@ -3,7 +3,7 @@ import { Navbar } from "../components/Navbar";
 import Services from "../components/Services";
 import { Footer } from "../components/Footer"
 
-const ServicesPage = () => {
+const EditServicesPage = () => {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Navbar />
@@ -17,4 +17,4 @@ const ServicesPage = () => {
     );
 };
 
-export default ServicesPage;
+export default EditServicesPage;

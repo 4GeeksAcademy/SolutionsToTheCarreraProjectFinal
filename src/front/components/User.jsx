@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const User = () => {
     const [user, setUser] = useState(null);
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
+    const { store, dispatch } = useGlobalReducer();
 
 
     const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const User = () => {
     });
 
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -23,6 +26,33 @@ const User = () => {
         });
     };
 
+    const deleteAccount = async () => {
+        if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            return;
+
+
+        }
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file");
+        try {
+            const response = await fetch(backendUrl + `/api/users/${store.user.id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete user");
+            }
+            const data = await response.json();
+            console.log("API Response:", data);
+            setMessage("Account deleted successfully!");
+            navigate("/logout");
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            setMessage("Error deleting account. Please try again.");
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,7 +94,6 @@ const User = () => {
         }
     };
 
-    const { store, dispatch } = useGlobalReducer();
 
     const fetchUserData = async () => {
         try {
@@ -95,7 +124,10 @@ const User = () => {
 
 
     useEffect(() => {
-
+        if (!store.user) {
+            navigate("/validateSession");
+            return;
+        }
 
         fetchUserData();
     }, []);
@@ -190,7 +222,9 @@ const User = () => {
                         {editing ? (
                             <>
                                 <button type="submit" className="btn btn-info btn-lg me-2">Save</button>
-                                <button className="btn btn-danger btn-lg" onClick={() => setEditing(false)}>Cancel</button>
+                                <button className="btn btn-secondary btn-lg me-2" onClick={() => setEditing(false)}>Cancel</button>
+                                <button className="btn btn-danger btn-lg me-2" onClick={() => deleteAccount(true)}>Delete account</button>
+
                             </>
                         ) : (
                             <button className="btn btn-primary btn-lg" onClick={() => setEditing(true)}>Edit</button>

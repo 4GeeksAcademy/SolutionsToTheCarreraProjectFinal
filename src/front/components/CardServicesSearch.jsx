@@ -55,9 +55,8 @@ const CardServicesSearch = ({ service, user }) => {
                         <p className="card-text"><strong>Time:</strong> {service.time}</p>
                         <p className="card-text"><strong>Price:</strong> ${service.price}</p>
 
-                        <h6 className="mt-3">User Information</h6>
                         <p className="card-text"><strong>Name:</strong> {user.name}</p>
-                        <p className="card-text"><strong>Email:</strong> {user.email}</p>
+
                     </div>
                 </div>
             </div>

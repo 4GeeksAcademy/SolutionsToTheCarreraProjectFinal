@@ -1,10 +1,20 @@
 
 import React from "react";
 import operariosImage from "../assets/img/image.png";
-
+import { useNavigate } from "react-router-dom";
 const CardServices = ({ service }) => {
+
+    const navigate = useNavigate();
+    const handleCardClick = () => {
+        navigate(`/servicedetail/${service.id}`);
+    };
+
     return (
-        <div className="col-10 mb-4" key={service.id}>
+        <div
+            className="col-10 mb-4" key={service.id}
+            style={{ maxWidth: "100%", cursor: "pointer" }}
+            onClick={handleCardClick}
+        >
             <div className="card h-100">
                 <img
                     src={service.image_Url || operariosImage}

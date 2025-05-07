@@ -10,10 +10,11 @@ import Home from "./pages/Home";
 import SingInPage from "./pages/SingInPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import UserPage from "./pages/UserPage.jsx";
-import ServicesPage from "./pages/ServicesPage.jsx";
+import EditServicesPage from "./pages/EditServicesPage.jsx";
 import SearchResultsPage from "./pages/SearchResultsPage.jsx";
 import ServiceDetailPage from "./pages/ServiceDetailPage";
-import { redirect } from "react-router-dom";
+import LogoutPage from "./pages/LogoutPage.jsx";
+import ValidateSessionPage from "./pages/ValidateSessionPage.jsx";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,18 +32,11 @@ export const router = createBrowserRouter(
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/singin" element={<SingInPage />} />
       <Route path="/user" element={<UserPage />} />
-      <Route path="/services/:serviceId?" element={<ServicesPage />} />
+      <Route path="/services/:serviceId?" element={<EditServicesPage />} />
       <Route path="/search-results" element={<SearchResultsPage />} />
       <Route path="/servicedetail/:id" element={<ServiceDetailPage />} />
-      <Route path="/logout" action={() => {
-        // Clear user data (e.g., token) from localStorage
-        // TODO: Implement logout logic here
-        // Redirect to the home page
-        return redirect("/");
-      }
-
-      } />
-
+      <Route path="/logout" element={<LogoutPage />} />
+      <Route path="/validateSession" element={<ValidateSessionPage />} />
     </>
 
 

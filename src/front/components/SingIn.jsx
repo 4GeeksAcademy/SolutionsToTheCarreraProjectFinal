@@ -40,6 +40,8 @@ const SingIn = () => {
             console.log("Login successful:", data);
 
             dispatch({ type: "login", payload: { token: data.token, user: data.user } });
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("user", JSON.stringify(data.user));
             navigate("/user");
         } catch (error) {
             console.error("Error during login:", error);

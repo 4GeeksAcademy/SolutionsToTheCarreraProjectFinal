@@ -94,9 +94,21 @@ def delete_user(user_id):
     user = User.query.get(user_id)
     if not user:
         return jsonify({"msg": "User not found"}), 404
+
+    # Delete all ratings associated with the user
+    ratings = Rating_cliente.query.filter_by(user_id=user_id).all()
+    for rating in ratings:
+        db.session.delete(rating)
+
+    # Delete all services associated with the user
+    services = Services.query.filter_by(user_id=user_id).all()
+    for service in services:
+        db.session.delete(service)
+
+    # Delete the user
     db.session.delete(user)
     db.session.commit()
-    return jsonify({"msg": "User deleted successfully"}), 200
+    return jsonify({"msg": "User, associated services, and ratings deleted successfully"}), 200
 
 
 @api.route('/users/<int:user_id>/services', methods=['GET'])
