@@ -9,11 +9,11 @@ const User = () => {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const { store, dispatch } = useGlobalReducer();
-
-
+    const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: "",
+        image_Url: "",
     });
 
     const [message, setMessage] = useState("");
@@ -57,15 +57,19 @@ const User = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const formDataToSend = {
             email: formData.email,
             user_id: store.user.id,
+            image_Url: formData.image_Url,
         };
+
+
 
         if (formData.password) {
             formDataToSend.password = formData.password;
         }
+        console.log(formData);
+
 
         try {
             const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -124,6 +128,9 @@ const User = () => {
     };
 
 
+
+
+
     useEffect(() => {
         if (!store.user) {
             navigate("/validateSession");
@@ -171,69 +178,84 @@ const User = () => {
     }
 
     return (
+
         <div className="container mt-5">
-            <div className="row align-items-center">
-                <div className="col-md-6 text-center">
-                    <img
-                        src={user.image_Url || emptyImage}
-                        alt={user.name}
-                        style={{
-                            width: "100%",
-                            maxWidth: "400px",
-                            height: "auto",
-                            borderRadius: "10px",
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                        }}
-                        className="img-fluid"
-                    />
-                </div>
-                <div className="col-md-6">
-                    <h2 className="text-center mb-4">Welcome, {user.name}!</h2>
-                    {!editing ? (
-                        <div style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
-                            <p><strong>Email:</strong> {user.email}</p>
-                        </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="w-100">
-                            <div className="mb-3">
-                                <label htmlFor="email" className="form-label">Email</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                />
+            <form onSubmit={handleSubmit} className="w-100">
+                <div className="row align-items-center">
+                    <div className="col-md-6 text-center position-relative">
+                        {editing && <button type="button" className="btn btn-primary position-absolute top-0 end-0 m-2" onClick={() => { setShowModal(true); }}>Edit</button>}
+                        <img
+                            src={formData.image_Url || emptyImage}
+                            alt={user.name}
+                            style={{
+                                width: "100%",
+                                maxWidth: "400px",
+                                height: "auto",
+                                borderRadius: "10px",
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                            }}
+                            className="img-fluid"
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <h2 className="text-center mb-4">Welcome, {user.name}!</h2>
+                        {!editing ? (
+                            <div style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+                                <p><strong>Email:</strong> {user.email}</p>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    placeholder="********"
-                                    className="form-control"
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </form>
-                    )}
-                    <div className="mt-4 d-flex justify-content-start">
-                        {editing ? (
-                            <>
-                                <button type="submit" className="btn btn-info btn-lg me-2">Save</button>
-                                <button className="btn btn-secondary btn-lg me-2" onClick={() => setEditing(false)}>Cancel</button>
-                                <button className="btn btn-danger btn-lg me-2" onClick={deleteAccount}>Delete Account</button>
-                            </>
                         ) : (
-                            <button className="btn btn-primary btn-lg" onClick={() => setEditing(true)}>Edit</button>
+                            <>
+                                <div className="mb-3">
+
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="image_Url"
+                                        name="image_Url"
+                                        value={formData.image_Url}
+                                        onChange={handleChange}
+                                        hidden
+                                    />
+
+                                    <label htmlFor="email" className="form-label">Email</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="password" className="form-label">Password</label>
+                                    <input
+                                        type="password"
+                                        placeholder="********"
+                                        className="form-control"
+                                        id="password"
+                                        name="password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </>
                         )}
+                        <div className="mt-4 d-flex justify-content-start">
+                            {editing ? (
+                                <>
+                                    <button type="submit" className="btn btn-info btn-lg me-2">Save</button>
+                                    <button type="button" className="btn btn-secondary btn-lg me-2" onClick={() => setEditing(false)}>Cancel</button>
+                                    <button type="button" className="btn btn-danger btn-lg me-2" onClick={deleteAccount}>Delete Account</button>
+                                </>
+                            ) : (
+                                <button type="button" className="btn btn-primary btn-lg" onClick={(e) => { e.preventDefault(); setEditing(true); }}>Edit</button>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
 
             <div className="mt-5">
                 <h3 className="text-center mb-4">Your Services</h3>
@@ -262,6 +284,7 @@ const User = () => {
                                             View
                                         </Link>
                                         <button
+                                            type="button"
                                             className="btn btn-danger btn-sm"
                                             onClick={() => handleDeleteService(service.id)}
                                         >
@@ -277,7 +300,49 @@ const User = () => {
                     <Link to="/services" className="btn btn-secondary btn-lg">Add New Service</Link>
                 </div>
             </div>
+            {showModal && (
+                <div className="modal show d-block" tabIndex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Contact Service Provider</h5>
+                                <button
+                                    type="button"
+                                    className="close"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    <span>&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <img className="img img-fluid w-100" src={formData.image_Url} />
+                                <input className="form-control" type="text" onChange={(e) => setFormData({ ...formData, image_Url: e.target.value })} />
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={() => { setShowModal(false); setFormData({ ...formData, image_Url: user.image_Url }); }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Ok
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
+
+
+
     );
 };
 

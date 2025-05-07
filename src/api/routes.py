@@ -85,6 +85,11 @@ def update_user(user_id):
     user.email = body.get("email", user.email)
     user.name = body.get("name", user.name)
     user.image_Url = body.get("image_Url", user.image_Url)
+
+    newPassword = body.get("password")
+    if newPassword:
+        user.password = newPassword
+
     db.session.commit()
     return jsonify({"msg": "User updated successfully"}), 200
 
