@@ -21,7 +21,7 @@ const Services = () => {
     const navigate = useNavigate()
 
     const [message, setMessage] = useState("");
-
+    const [loading, setLoading] = useState(true);
     const [categories, setCategories] = useState([]);
 
 
@@ -42,9 +42,18 @@ const Services = () => {
 
                 if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
 
+                const categoryResponse = await fetch(`${backendUrl}/api/categories`);
+                if (!categoryResponse.ok) {
+                    throw new Error("Failed to fetch user data");
+                }
+
+                const categoryData = await categoryResponse.json();
+                setCategories(categoryData);
+
                 if (!serviceId) {
                     return;
                 }
+
 
                 const response = await fetch(`${backendUrl}/api/services/${serviceId}`);
                 if (!response.ok) {
@@ -54,12 +63,7 @@ const Services = () => {
                 setFormData(serviceData);
 
 
-                const categoryResponse = await fetch(`${backendUrl}/api/categories`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch user data");
-                }
-                const categoryData = await categoryResponse.json();
-                setCategories(categoryData);
+
 
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -79,7 +83,7 @@ const Services = () => {
             description: formData.description,
             time: formData.time,
             price: formData.price,
-            image_Url: formData.image ? formData.image.name : null,
+            image_Url: formData.image,
             category_id: formData.category_id,
             user_id: store.user.id
         };
@@ -122,8 +126,8 @@ const Services = () => {
     return (
         <div className="container mt-5">
             <h2 className="text-center">{serviceId ? (
-                "Editar servicio"
-            ) : ("Crear servicio")}</h2>
+                "Service Edit"
+            ) : ("Service Create")}</h2>
             <form onSubmit={handleSubmit}>
 
                 <div className="mb-3">
@@ -175,12 +179,13 @@ const Services = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="image" className="form-label">Service Image (Optional)</label>
+                    <label htmlFor="image" className="form-label">Service Image URL (Optional)</label>
                     <input
-                        type="file"
+                        type="text"
                         className="form-control"
                         id="image"
                         name="image"
+                        value={formData.image || ""} 
                         onChange={handleChange}
                     />
                 </div>

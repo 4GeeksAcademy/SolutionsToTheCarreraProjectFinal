@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import emptyImage from "../assets/img/empty.jpg";
 const User = () => {
     const [user, setUser] = useState(null);
     const [services, setServices] = useState([]);
@@ -171,25 +172,28 @@ const User = () => {
 
     return (
         <div className="container mt-5">
-            <div className="row mb-4">
-                <div className="col-md-4 text-center">
+            <div className="row align-items-center">
+                <div className="col-md-6 text-center">
                     <img
-                        src={user.image_Url}
+                        src={user.image_Url || emptyImage}
                         alt={user.name}
-                        className="img-fluid rounded-circle"
-                        style={{ width: "200px", height: "200px" }}
+                        style={{
+                            width: "100%",
+                            maxWidth: "400px",
+                            height: "auto",
+                            borderRadius: "10px",
+                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                        }}
+                        className="img-fluid"
                     />
                 </div>
-                <div className="col-md-8 d-flex flex-column">
-                    <h2 className="text-center mb-4">Welcome {user.name}!</h2>
-                    {!editing && (
-                        <div className="mb-4">
-                            <label className="mb-2 d-block">Email:</label>
-                            <span>{user.email}</span>
+                <div className="col-md-6">
+                    <h2 className="text-center mb-4">Welcome, {user.name}!</h2>
+                    {!editing ? (
+                        <div style={{ fontSize: "1.2rem", lineHeight: "1.8" }}>
+                            <p><strong>Email:</strong> {user.email}</p>
                         </div>
-                    )}
-
-                    {editing && (
+                    ) : (
                         <form onSubmit={handleSubmit} className="w-100">
                             <div className="mb-3">
                                 <label htmlFor="email" className="form-label">Email</label>
@@ -217,14 +221,12 @@ const User = () => {
                             </div>
                         </form>
                     )}
-
-                    <div className="mt-auto d-flex justify-content-start">
+                    <div className="mt-4 d-flex justify-content-start">
                         {editing ? (
                             <>
                                 <button type="submit" className="btn btn-info btn-lg me-2">Save</button>
                                 <button className="btn btn-secondary btn-lg me-2" onClick={() => setEditing(false)}>Cancel</button>
-                                <button className="btn btn-danger btn-lg me-2" onClick={() => deleteAccount(true)}>Delete account</button>
-
+                                <button className="btn btn-danger btn-lg me-2" onClick={deleteAccount}>Delete Account</button>
                             </>
                         ) : (
                             <button className="btn btn-primary btn-lg" onClick={() => setEditing(true)}>Edit</button>
@@ -232,10 +234,11 @@ const User = () => {
                     </div>
                 </div>
             </div>
-            <div className="mt-4">
-                <h3>Services Data</h3>
+
+            <div className="mt-5">
+                <h3 className="text-center mb-4">Your Services</h3>
                 {services.length === 0 ? (
-                    <p>No related data available</p>
+                    <p className="text-center">No services available</p>
                 ) : (
                     <table className="table table-striped">
                         <thead>
@@ -253,7 +256,7 @@ const User = () => {
                                     <td>{service.name}</td>
                                     <td>{service.description}</td>
                                     <td>{service.time}</td>
-                                    <td>{service.price}</td>
+                                    <td>${service.price}</td>
                                     <td>
                                         <Link to={`/services/${service.id}`} className="btn btn-primary btn-sm me-2">
                                             View
@@ -270,9 +273,9 @@ const User = () => {
                         </tbody>
                     </table>
                 )}
-                <Link to="/services" className="btn btn-secondary">
-                    New service
-                </Link>
+                <div className="text-center mt-4">
+                    <Link to="/services" className="btn btn-secondary btn-lg">Add New Service</Link>
+                </div>
             </div>
         </div>
     );

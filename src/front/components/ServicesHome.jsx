@@ -54,7 +54,7 @@ const ServicesHome = () => {
         <div className="container mt-5">
             <h2 className="text-center mb-4">Our Services</h2>
             <Slider {...settings}>
-                {services.map((service) => (
+                {services.slice(0, 15).map((service) => ( 
                     <div key={service.id} style={{ padding: "10px" }}>
                         <div>
                             <CardServices service={service} />

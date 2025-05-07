@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import operariosImage from "../assets/img/image.png";
+import operariosImage from "../assets/img/Banner.png";
 
 const SingIn = () => {
     const [email, setEmail] = useState("");
@@ -58,7 +58,6 @@ const SingIn = () => {
                         src={operariosImage}
                         alt="Sign In Illustration"
                         className="img-fluid rounded"
-                        style={{ maxWidth: "100%" }}
                     />
                 </div>
 

@@ -143,8 +143,17 @@ def get_services():
         "time": service.time,
         "price": service.price,
         "image_Url": service.image_Url,
-        "user_id": service.user_id,
-        "category_id": service.category_id
+        "user": {
+            "id": service.user.id,
+            "name": service.user.name,
+            "email": service.user.email,
+            "image_Url": service.user.image_Url,
+            "is_active": service.user.is_active
+        } if service.user else None,
+        "category": {
+            "id": service.category.id,
+            "name": service.category.category
+        } if service.category else None
     } for service in services]), 200
 
 
@@ -153,6 +162,10 @@ def get_service(service_id):
     service = Services.query.get(service_id)
     if not service:
         return jsonify({"msg": "Service not found"}), 404
+
+    user = User.query.get(service.user_id)
+    category = Category.query.get(service.category_id)
+
     return jsonify({
         "id": service.id,
         "name": service.name,
@@ -160,8 +173,17 @@ def get_service(service_id):
         "time": service.time,
         "price": service.price,
         "image_Url": service.image_Url,
-        "user_id": service.user_id,
-        "category_id": service.category_id
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "image_Url": user.image_Url,
+            "is_active": user.is_active
+        } if user else None,
+        "category": {
+            "id": category.id,
+            "name": category.category
+        } if category else None
     }), 200
 
 
@@ -299,3 +321,87 @@ def search():
         })
 
     return jsonify(results), 200
+
+
+@api.route('/insert-dummy-data', methods=['POST'])
+def insert_dummy_data():
+    try:
+        # Crear categorías orientadas al sector industrial
+        categories = [
+            Category(category="Manufacturación"),
+            Category(category="Construcción"),
+            Category(category="Energía"),
+            Category(category="Transporte"),
+            Category(category="Salud"),
+            Category(category="Tecnología"),
+            Category(category="Agricultura"),
+            Category(category="Comercio Minorista")
+        ]
+        db.session.add_all(categories)
+        db.session.commit()
+
+        # Lista de nombres y apellidos españoles
+        nombres = [
+            "Carlos García", "María Fernández", "José Martínez", "Ana López",
+            "Luis Sánchez", "Carmen González", "Javier Rodríguez", "Laura Pérez",
+            "Antonio Gómez", "Isabel Díaz", "Manuel Hernández", "Lucía Romero",
+            "Francisco Torres", "Elena Ruiz", "Miguel Jiménez", "Sara Morales",
+            "Juan Navarro", "Patricia Ortega", "Pedro Castro", "Sofía Delgado"
+        ]
+
+        image_urls = [
+            "https://img.freepik.com/psd-gratis/retrato-estudio-joven-adolescente_23-2150162247.jpg?semt=ais_hybrid&w=740",
+            "https://st3.depositphotos.com/1003642/16677/i/450/depositphotos_166778988-stock-photo-portrait-senior-man.jpg",
+            "https://www.alimarket.es/media/images/2020/detalle_art/322119/197664_high_original.png",
+            "https://upload.wikimedia.org/wikipedia/commons/d/d9/Roberto_Leal2013.jpg"
+        ]
+
+        users = []
+        for i, nombre in enumerate(nombres):
+            user = User(
+                email=f"{nombre.split()[0].lower()}{i+1}@example.com",
+                password="123456",
+                name=nombre,
+                # Alternar entre las URLs
+                image_Url=image_urls[i % len(image_urls)],
+                is_active=True
+            )
+            users.append(user)
+        db.session.add_all(users)
+        db.session.commit()
+
+        services = []
+        for user in users:
+            for j in range(4):
+                categoria = categories[j % len(categories)]
+                service = Services(
+                    name=f"Servicio de {categoria.category} por {user.name}",
+                    description=f"{user.name} ofrece un servicio especializado en {categoria.category.lower()} con alta calidad y eficiencia.",
+                    time="2 horas",
+                    price=100 + j * 20,
+                    # Alternar entre las URLs
+                    image_Url=image_urls[(j + user.id) % len(image_urls)],
+                    user_id=user.id,
+                    category_id=categoria.id  # Asignar categorías cíclicamente
+                )
+                services.append(service)
+        db.session.add_all(services)
+        db.session.commit()
+
+        # Añadir ratings a los usuarios
+        ratings = []
+        for user in users:
+            for k in range(3):  # Cada usuario tiene 3 ratings
+                rating = Rating_cliente(
+                    rating=(k + 3) % 5 + 1,  # Generar ratings entre 1 y 5
+                    opinions=f"Excelente servicio proporcionado por {user.name}.",
+                    user_id=user.id
+                )
+                ratings.append(rating)
+        db.session.add_all(ratings)
+        db.session.commit()
+
+        return jsonify({"msg": "Datos generados exitosamente con nombres reales"}), 200
+    except Exception as e:
+        print(f"Error al insertar datos: {e}")
+        return jsonify({"msg": "Error al insertar datos"}), 500

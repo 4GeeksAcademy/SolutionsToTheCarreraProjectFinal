@@ -11,12 +11,10 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_mail import Mail, Message
-
+from api.email_templates import service_inquiry_html
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
-
-# from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -24,25 +22,24 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 app.config.update(dict(
-    DEBUG=True,
-    Mail_SERVER='smtp.gmail.com',
-    Mail_PORT=587,
-    Mail_USE_TLS=True,
-    Mail_USE_SSL=False,
-    Mail_USERNAME='jjcarrera04@gmail.com',
-    Mail_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    DEBUG=False,
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_USERNAME='jjcarrera04@gmail.com',
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
 ))
 
 mail = Mail(app)
 app.url_map.strict_slashes = False
 
-# Setup the flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = os.getenv("jwt_KEY")  # change this!
+
+app.config["JWT_SECRET_KEY"] = os.getenv("jwt_KEY")
 jwt = JWTManager(app)
 
 CORS(app)
 
-# database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
@@ -54,16 +51,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
-# add the admin
+
 setup_admin(app)
 
-# add the admin
 setup_commands(app)
 
-# Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
-
-# Handle/serialize errors like a JSON object
 
 
 @app.errorhandler(APIException)
@@ -79,8 +72,6 @@ def sitemap():
         return generate_sitemap(app)
     return send_from_directory(static_file_dir, 'index.html')
 
-# any other endpoint will try to serve it like a static file
-
 
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
@@ -91,17 +82,42 @@ def serve_any_other_file(path):
     return response
 
 
-@app.route('/send_email', methods=['GET'])
+@app.route('/send_email', methods=['POST', 'GET'])
 def send_email():
- 
-        msg = Message(
-            subject="Test mail",
-            sender="jjcarrera04@gmail.com",
-            recipients=["jjcarrera04@gmail.com"],
-            body="This is a test email sent from Flask."
-        )
-        mail.send(msg)
-        return jsonify({"message": "Email sent successfully!"}), 200
+
+    try:
+        if request.method == 'POST':
+            data = request.get_json()
+
+            if not data.get('sender') or not data.get('recipient') or not data.get('message'):
+                return jsonify({"msg": "Missing required fields: sender, recipient, message"}), 400
+
+            # Usar la función para generar el HTML
+            html_content = service_inquiry_html(
+                data['sender'], data['recipient'], data['message'])
+
+            msg = Message(
+                subject="Service Inquiry",
+                sender=data['sender'],
+                recipients=[data['recipient']],
+                html=html_content
+            )
+            mail.send(msg)
+            return '', 200
+        else:
+            msg = Message(
+                subject="Test mail",
+                sender="jjcarrera04@gmail.com",
+                recipients=["jjcarrera04@gmail.com"],
+                body="This is a test email sent from Flask."
+            )
+            mail.send(msg)
+            return '', 200
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return jsonify({"msg": "Failed to send email"}), 500
+
+   # return jsonify({"message": "Email sent successfully!"}), 200
 
 
 # this only runs if `$ python src/main.py` is executed

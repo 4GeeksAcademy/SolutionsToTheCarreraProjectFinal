@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -9,6 +11,9 @@ const Register = () => {
     });
 
     const [message, setMessage] = useState("");
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
+
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -25,7 +30,7 @@ const Register = () => {
             email: formData.email,
             password: formData.password,
             name: formData.name,
-            image_Url: formData.image ? formData.image.name : null,
+            image_Url: formData.image,
         };
 
         try {
@@ -48,6 +53,33 @@ const Register = () => {
             const data = await response.json();
             setMessage("User registered successfully!");
             console.log("API Response:", data);
+
+            const formDatatologin = {
+                email: formData.email,
+                password: formData.password
+            };
+
+            const responseLogin = await fetch(`${backendUrl}/api/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formDatatologin),
+            });
+
+            if (!responseLogin.ok) {
+                throw new Error("Invalid credentials");
+            }
+
+            const datalogin = await responseLogin.json();
+
+            dispatch({ type: "login", payload: { token: datalogin.token, user: datalogin.user } });
+            localStorage.setItem("token", datalogin.token);
+            localStorage.setItem("user", JSON.stringify(datalogin.user));
+            navigate("/user");
+
+
+
         } catch (error) {
             console.error("Error registering user:", error);
             setMessage("Error registering user. Please try again.");
@@ -97,10 +129,11 @@ const Register = () => {
                 <div className="mb-3">
                     <label htmlFor="image" className="form-label">Profile Image (Optional)</label>
                     <input
-                        type="file"
+                        type="text"
                         className="form-control"
                         id="image"
                         name="image"
+                        value={formData.image || ""}
                         onChange={handleChange}
                     />
                 </div>

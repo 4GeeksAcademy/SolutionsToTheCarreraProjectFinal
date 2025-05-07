@@ -19,7 +19,7 @@ export const Navbar = () => {
 					</span>
 				</Link>
 				<div className="d-flex justify-content-end">
-					{ 
+					{
 						store.token ? (
 							<>
 								<div className="me-2">
@@ -33,7 +33,7 @@ export const Navbar = () => {
 									</Link>
 								</div>
 							</>
-						) : ( 
+						) : (
 							<>
 								<div className="me-2">
 									<Link to="/singin">

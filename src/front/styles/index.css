@@ -1,5 +1,9 @@
 body {
-  background-color: #e4e4e4d2; /* Light gray background */
+  background-color: #e4e4e4d2; 
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  
 }
 h1 {
   color: #333; /* Dark gray text */

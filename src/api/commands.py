@@ -34,40 +34,4 @@ def setup_commands(app):
     def insert_test_data():
         print("Inserting test data...")
 
-        # Crear categorías de ejemplo
-        category1 = Category(category="Technology")
-        category2 = Category(category="Health")
-        db.session.add_all([category1, category2])
-        db.session.commit()
-
-        # Crear usuarios de ejemplo
-        user1 = User(email="john.doe@example.com",
-                     password="123456", is_active=True)
-        user2 = User(email="jane.smith@example.com",
-                     password="123456", is_active=True)
-        db.session.add_all([user1, user2])
-        db.session.commit()
-
-        # Crear servicios de ejemplo
-        service1 = Services(
-            name="Web Development",
-            description="Building modern websites",
-            time="2 hours",
-            price=150,
-            image_Url="https://via.placeholder.com/150",
-            user_id=user1.id,
-            category_id=category1.id
-        )
-        service2 = Services(
-            name="Personal Training",
-            description="One-on-one fitness coaching",
-            time="1 hour",
-            price=50,
-            image_Url="https://via.placeholder.com/150",
-            user_id=user2.id,
-            category_id=category2.id
-        )
-        db.session.add_all([service1, service2])
-        db.session.commit()
-
         print("Test data inserted successfully!")

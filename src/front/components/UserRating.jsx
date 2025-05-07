@@ -1,5 +1,5 @@
 import React from "react";
-import defaultUserImage from "../assets/img/image.png";
+import defaultUserImage from "../assets/img/empty.jpg";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 const UserRating = ({ rating }) => {
@@ -22,7 +22,12 @@ const UserRating = ({ rating }) => {
     };
 
     return (
-        <div className="card mb-4">
+        <div className="card mb-4"
+            style={{
+                width: "25em", 
+                height: "10em", 
+                overflow: "hidden" 
+            }}>
             <div className="card-body d-flex align-items-center">
                 <img
                     src={userImage || defaultUserImage}

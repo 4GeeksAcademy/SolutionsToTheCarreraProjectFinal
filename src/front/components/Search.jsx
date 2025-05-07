@@ -25,7 +25,7 @@ const Search = () => {
     };
 
     return (
-        <div className="text-center p-5" style={{ backgroundColor: "#f8f9fa" }}>
+        <div className="text-center p-5">
             <h2 className="mb-3">What service can we offer you?</h2>
             <div className="d-flex justify-content-center">
                 <input
@@ -34,7 +34,7 @@ const Search = () => {
                     placeholder="Service to search..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    onKeyDown={handleKeyDown} 
+                    onKeyDown={handleKeyDown}
                 />
                 <button className="btn btn-primary ms-2" onClick={handleSearch}>
                     Search

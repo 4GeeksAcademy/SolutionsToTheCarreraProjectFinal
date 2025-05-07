@@ -10,10 +10,10 @@ const RatingsList = () => {
         const fetchRatings = async () => {
             try {
                 const backendUrl = import.meta.env.VITE_BACKEND_URL
-                
+
                 if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
 
-                const response = await fetch(backendUrl +"/api/ratings"); 
+                const response = await fetch(backendUrl + "/api/ratings");
                 if (!response.ok) {
                     throw new Error("Failed to fetch ratings");
                 }
@@ -35,17 +35,20 @@ const RatingsList = () => {
             {loading ? (
                 <p className="text-center">Loading...</p>
             ) : ratings.length > 0 ? (
-                ratings.map((rating) => (
-                    <UserRating
-                        key={rating.id}
-                        rating={{
-                            userImage: rating.user?.image_Url,
-                            userName: rating.user?.name || "Anonymous",
-                            stars: rating.rating,
-                            opinion: rating.opinions,
-                        }}
-                    />
-                ))
+                <div className="row">
+                    {ratings.slice(0, 9).map((rating) => ( 
+                        <div className="col-md-4 mb-4" key={rating.id}> 
+                            <UserRating
+                                rating={{
+                                    userImage: rating.user?.image_Url,
+                                    userName: rating.user?.name || "Anonymous",
+                                    stars: rating.rating,
+                                    opinion: rating.opinions,
+                                }}
+                            />
+                        </div>
+                    ))}
+                </div>
             ) : (
                 <p className="text-center">No ratings available</p>
             )}

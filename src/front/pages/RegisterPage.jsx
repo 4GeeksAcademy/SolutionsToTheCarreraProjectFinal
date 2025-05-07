@@ -9,7 +9,6 @@ const RegisterPage = () => {
             <Navbar />
             <div className="flex-grow-1">
                 <div className="container mt-5" style={{ maxHeight: "80vh", overflowY: "auto" }}>
-                    <h2 className="text-center">Register</h2>
                     <Register />
                 </div>
             </div>
