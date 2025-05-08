@@ -11,7 +11,7 @@ const Banner = () => {
                 className="img-fluid mb-4"
                 style={{
                     objectFit: "cover",
-                    width: "50%",
+                    width: "60%",
                     height: "auto",
                 
                 }}

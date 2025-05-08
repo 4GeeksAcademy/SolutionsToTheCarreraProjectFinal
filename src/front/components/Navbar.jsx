@@ -19,6 +19,8 @@ export const Navbar = () => {
 					</span>
 				</Link>
 				<div className="d-flex justify-content-end">
+
+					
 					{
 						store.token ? (
 							<>

@@ -89,13 +89,13 @@ const User = () => {
             }
 
             const data = await response.json();
-            // setMessage("Service registered successfully!");
+            
             console.log("API Response:", data);
             setEditing(false);
-            fetchUserData(); // Refresh user data after update
+            fetchUserData(); 
         } catch (error) {
             console.error("Error updating user:", error);
-            // setMessage("Error registering service. Please try again.");
+            
         }
     };
 
