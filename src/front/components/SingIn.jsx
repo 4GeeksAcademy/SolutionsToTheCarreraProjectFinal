@@ -52,7 +52,6 @@ const SingIn = () => {
     return (
         <div className="container mt-5">
             <div className="row align-items-center">
-                {/* Imagen grande a la izquierda */}
                 <div className="col-md-6 text-center">
                     <img
                         src={operariosImage}
@@ -61,7 +60,6 @@ const SingIn = () => {
                     />
                 </div>
 
-                {/* Formulario a la derecha */}
                 <div className="col-md-6">
                     <h2 className="text-center mb-4">Sign In</h2>
                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}

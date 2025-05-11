@@ -100,17 +100,14 @@ def delete_user(user_id):
     if not user:
         return jsonify({"msg": "User not found"}), 404
 
-    # Delete all ratings associated with the user
     ratings = Rating_cliente.query.filter_by(user_id=user_id).all()
     for rating in ratings:
         db.session.delete(rating)
 
-    # Delete all services associated with the user
     services = Services.query.filter_by(user_id=user_id).all()
     for service in services:
         db.session.delete(service)
 
-    # Delete the user
     db.session.delete(user)
     db.session.commit()
     return jsonify({"msg": "User, associated services, and ratings deleted successfully"}), 200
@@ -331,7 +328,6 @@ def search():
 @api.route('/insert-dummy-data', methods=['POST'])
 def insert_dummy_data():
     try:
-        # Crear categorías orientadas al sector industrial
         categories = [
             Category(category="Manufacturación"),
             Category(category="Construcción"),
@@ -345,7 +341,6 @@ def insert_dummy_data():
         db.session.add_all(categories)
         db.session.commit()
 
-        # Lista de nombres y apellidos españoles
         nombres = [
             "Carlos García", "María Fernández", "José Martínez", "Ana López",
             "Luis Sánchez", "Carmen González", "Javier Rodríguez", "Laura Pérez",
@@ -367,7 +362,7 @@ def insert_dummy_data():
                 email=f"{nombre.split()[0].lower()}{i+1}@example.com",
                 password="123456",
                 name=nombre,
-                # Alternar entre las URLs
+
                 image_Url=image_urls[i % len(image_urls)],
                 is_active=True
             )
@@ -384,21 +379,21 @@ def insert_dummy_data():
                     description=f"{user.name} ofrece un servicio especializado en {categoria.category.lower()} con alta calidad y eficiencia.",
                     time="2 horas",
                     price=100 + j * 20,
-                    # Alternar entre las URLs
+
                     image_Url=image_urls[(j + user.id) % len(image_urls)],
                     user_id=user.id,
-                    category_id=categoria.id  # Asignar categorías cíclicamente
+                    category_id=categoria.id  
                 )
                 services.append(service)
         db.session.add_all(services)
         db.session.commit()
 
-        # Añadir ratings a los usuarios
+
         ratings = []
         for user in users:
-            for k in range(3):  # Cada usuario tiene 3 ratings
+            for k in range(3): 
                 rating = Rating_cliente(
-                    rating=(k + 3) % 5 + 1,  # Generar ratings entre 1 y 5
+                    rating=(k + 3) % 5 + 1,  
                     opinions=f"Excelente servicio proporcionado por {user.name}.",
                     user_id=user.id
                 )

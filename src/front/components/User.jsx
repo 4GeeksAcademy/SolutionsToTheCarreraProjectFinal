@@ -113,7 +113,6 @@ const User = () => {
             const userData = await response.json();
             setUser(userData);
             setFormData(userData)
-            // Fetch related data (e.g., services or ratings)
             const userServices = await fetch(`${backendUrl}/api/users/${store.user.id}/services`);
             if (!userServices.ok) {
                 throw new Error("Failed to fetch related data");
@@ -159,12 +158,10 @@ const User = () => {
             }
 
             const data = await response.json();
-            await fetchUserData(); // Refresh user data after deletion
-            // setMessage("Service deleted successfully!");
+            await fetchUserData(); 
             console.log("API Response:", data);
         } catch (error) {
             console.error("Error registering service:", error);
-            // setMessage("Error registering service. Please try again.");
         }
     };
 
